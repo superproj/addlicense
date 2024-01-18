@@ -293,8 +293,11 @@ func addLicense(path string, fmode os.FileMode, tmpl *template.Template, data *c
 	}
 
 	b, err := ioutil.ReadFile(path)
-	if err != nil || hasLicense(b) {
-		return false, fmt.Errorf("read file failed, err: %w", err)
+	if err != nil {
+		return false, err
+	}
+	if hasLicense(b) {
+		return false, nil
 	}
 
 	line := hashBang(b)
@@ -314,8 +317,12 @@ func addLicense(path string, fmode os.FileMode, tmpl *template.Template, data *c
 // fileHasLicense reports whether the file at path contains a license header.
 func fileHasLicense(path string) (bool, error) {
 	b, err := ioutil.ReadFile(path)
-	if err != nil || hasLicense(b) {
-		return false, fmt.Errorf("read file failed, err: %w", err)
+	if err != nil {
+		return false, err
+	}
+
+	if hasLicense(b) {
+		return false, nil
 	}
 
 	return true, nil
